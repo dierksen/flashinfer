@@ -5,7 +5,12 @@ set -eo pipefail
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Disable sanity testing for multi-node tests (always run full suite)
+# shellcheck disable=SC2034  # Used by common_test_functions.sh
+DISABLE_SANITY_TEST=true
+
 # Source common test functions
+# shellcheck disable=SC1091  # File exists, checked separately
 source "${SCRIPT_DIR}/common_test_functions.sh"
 
 # Define the specific test files for multi-node comm tests
@@ -39,7 +44,7 @@ main() {
         execute_tests "$TEST_FILES"
     fi
 
-    exit $EXIT_CODE
+    exit "$EXIT_CODE"
 }
 
 main "$@"
