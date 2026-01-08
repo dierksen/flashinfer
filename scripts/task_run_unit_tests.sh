@@ -13,7 +13,7 @@ install_precompiled_kernels() {
     if [ "$DRY_RUN" = "true" ]; then
         return
     fi
-    
+
     JIT_ARCH_EFFECTIVE=""
     # Map CUDA_VERSION to CUDA_STREAM for artifact lookup
     if [[ "${CUDA_VERSION}" == cu* ]]; then
@@ -25,7 +25,7 @@ install_precompiled_kernels() {
     fi
     echo "Using CUDA stream: ${CUDA_STREAM}"
     echo ""
-    
+
     if [ -n "${JIT_ARCH}" ]; then
         # 12.0a for CUDA 12.9.0, 12.0f for CUDA 13.0.0
         if [ "${JIT_ARCH}" = "12.0" ]; then
@@ -133,29 +133,29 @@ find_test_files() {
 main() {
     # Parse command line arguments
     parse_args "$@"
-    
+
     # Clean Python cache
     clean_python_cache
-    
+
     # Print test mode banner
     print_test_mode_banner
-    
+
     # Install precompiled kernels (unique to unit tests)
     install_precompiled_kernels
-    
+
     # Install and verify
     install_and_verify
-    
+
     # Find test files (unique to unit tests - auto-discovery)
     find_test_files
-    
+
     # Execute tests or dry run
     if [ "$DRY_RUN" == "true" ]; then
         execute_dry_run "$TEST_FILES"
     else
         execute_tests "$TEST_FILES"
     fi
-    
+
     exit $EXIT_CODE
 }
 
