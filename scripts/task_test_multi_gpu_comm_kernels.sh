@@ -8,37 +8,37 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Source common test functions
 source "${SCRIPT_DIR}/common_test_functions.sh"
 
-# Define the specific test files for multi-node comm tests
-TEST_FILES="tests/comm/test_mnnvl_memory.py tests/comm/test_trtllm_mnnvl_allreduce.py tests/comm/test_mnnvl_moe_alltoall.py"
+# Define the specific test files for multi-GPU comm tests (single-node)
+TEST_FILES="tests/comm/test_allreduce_unified_api.py tests/comm/test_allreduce_negative.py tests/comm/test_trtllm_allreduce_fusion.py"
 
 # Main execution
 main() {
     # Parse command line arguments
     parse_args "$@"
-    
+
     # Clean Python cache
     clean_python_cache
-    
+
     # Print test mode banner
     print_test_mode_banner
-    
+
     # Install and verify (unless dry run)
     install_and_verify
-    
+
     # Print test files
-    echo "Multi-node comm kernel test files:"
+    echo "Multi-GPU comm kernel test files:"
     for test_file in $TEST_FILES; do
         echo "  $test_file"
     done
     echo ""
-    
+
     # Execute tests or dry run
     if [ "$DRY_RUN" == "true" ]; then
         execute_dry_run "$TEST_FILES"
     else
         execute_tests "$TEST_FILES"
     fi
-    
+
     exit $EXIT_CODE
 }
 
