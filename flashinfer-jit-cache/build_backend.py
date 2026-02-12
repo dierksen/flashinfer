@@ -103,6 +103,20 @@ def _build_aot_modules():
     aot_package_dir = Path(__file__).parent / "flashinfer_jit_cache" / "jit_cache"
     aot_package_dir.mkdir(parents=True, exist_ok=True)
 
+    # Check if incremental build already populated modules
+    # Only skip compilation if explicitly signaled via environment variable
+    if os.environ.get("FLASHINFER_USE_PREBUILT_MODULES") == "1":
+        existing_so_files = list(aot_package_dir.rglob("*.so"))
+        if existing_so_files:
+            print(
+                f"Using {len(existing_so_files)} pre-built AOT modules from incremental build (skipping compilation)"
+            )
+            return
+        else:
+            print(
+                "Warning: FLASHINFER_USE_PREBUILT_MODULES=1 but no pre-built modules found, will compile"
+            )
+
     try:
         # Compile AOT modules
         _compile_jit_cache(aot_package_dir)
