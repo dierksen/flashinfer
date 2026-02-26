@@ -1040,14 +1040,20 @@ class BatchDecodeWithPagedKVCacheWrapper:
                 self._cached_module = self._jit_module
             else:
                 if self._backend == "auto":
-                    self._backend = determine_attention_backend(
-                        self.device,
-                        PosEncodingMode[pos_encoding_mode].value,
-                        False,  # use_fp16_qk_reduction
-                        False,  # use_custom_mask
-                        q_data_type,
-                        kv_data_type,
-                    )
+                    if {
+                        torch.float8_e4m3fn,
+                        torch.float8_e5m2,
+                    } & {q_data_type, kv_data_type}:
+                        self._backend = determine_attention_backend(
+                            self.device,
+                            PosEncodingMode[pos_encoding_mode].value,
+                            False,  # use_fp16_qk_reductions
+                            False,  # use_custom_mask
+                            q_data_type,
+                            kv_data_type,
+                        )
+                    else:
+                        self._backend = "fa2"
                 self._cached_module = get_batch_prefill_module(
                     self._backend,
                     q_data_type,
@@ -2209,7 +2215,7 @@ def trtllm_batch_decode_with_kv_cache(
         The implementation backend, could be ``auto``/``xqa`` or ``trtllm-gen``. Defaults to ``auto``.
         When set to ``auto``, the backend will be chosen based on the device architecture and kernel availability.
         For sm_100 and sm_103 (blackwell architecture), ``auto`` will choose ``trtllm-gen`` backend.
-        For sm_90 (hopper architecture) and sm_120 (blackwell architecture), ``auto`` will choose ``xqa`` backend.
+        For sm_90 (hopper architecture) and sm_120/sm_121 (blackwell architecture), ``auto`` will choose ``xqa`` backend.
 
     o_scale : Optional[float] = 1.0
         output scale factor for xqa fp8 output.
