@@ -227,6 +227,15 @@ jobs:
       - name: Run Test
         run: bash ci/bash.sh ${DOCKER_IMAGE} --no-gpu ./scripts/task_test_jit_cache_package_build_import.sh
 
+      - name: Upload JIT cache wheel artifact
+        if: success() && (matrix.cuda == 'cu129' || matrix.cuda == 'cu130')
+        uses: actions/upload-artifact@v4
+        with:
+          name: jit-cache-${{ matrix.cuda }}-${{ matrix.arch }}
+          path: ${{ github.workspace }}/flashinfer-jit-cache/dist/*.whl
+          if-no-files-found: warn
+          retention-days: 3
+
   analyze-aot-failure:
     name: Analyze AOT Failure
     needs: [setup, aot-build-import]
@@ -307,6 +316,15 @@ jobs:
 
       - name: Run Test
         run: bash ci/bash.sh ${DOCKER_IMAGE} --no-gpu ./scripts/task_test_jit_cache_package_build_import.sh
+
+      - name: Upload JIT cache wheel artifact
+        if: success() && (matrix.cuda == 'cu129' || matrix.cuda == 'cu130')
+        uses: actions/upload-artifact@v4
+        with:
+          name: jit-cache-${{ matrix.cuda }}-${{ matrix.arch }}
+          path: ${{ github.workspace }}/flashinfer-jit-cache/dist/*.whl
+          if-no-files-found: warn
+          retention-days: 3
 
   # ---------------------------------------------------------------------------
   # GPU JIT Tests - SM86 (A10G) - Spot + On-Demand Rerun
