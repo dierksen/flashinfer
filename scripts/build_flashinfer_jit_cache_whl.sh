@@ -8,15 +8,15 @@ echo "=========================================="
 echo "Building flashinfer-jit-cache wheel"
 echo "=========================================="
 
-# MAX_JOBS = min(nproc, max(1, MemAvailable_GB/4))
-MEM_AVAILABLE_GB=$(free -g | awk '/^Mem:/ {print $7}')
-NPROC=$(nproc)
-# MAX_JOBS=$(( MEM_AVAILABLE_GB / $([ "$(uname -m)" = "aarch64" ] && echo 8 || echo 4) ))
-MAX_JOBS=$(( MEM_AVAILABLE_GB / 8 ))
-if (( MAX_JOBS < 1 )); then
-  MAX_JOBS=1
-elif (( NPROC < MAX_JOBS )); then
-  MAX_JOBS=$NPROC
+if [ -z "${MAX_JOBS}" ]; then
+  MEM_AVAILABLE_GB=$(free -g | awk '/^Mem:/ {print $7}')
+  NPROC=$(nproc)
+  MAX_JOBS=$(( MEM_AVAILABLE_GB / 8 ))
+  if (( MAX_JOBS < 1 )); then
+    MAX_JOBS=1
+  elif (( NPROC < MAX_JOBS )); then
+    MAX_JOBS=$NPROC
+  fi
 fi
 
 export MAX_JOBS
