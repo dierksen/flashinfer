@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "global_patterns": [
+    ".github/workflows/**",
+    "3rdparty/**",
+    "build_backend.py",
+    "build_utils.py",
+    "ci/**",
+    "docker/**",
+    "pyproject.toml",
+    "pytest.ini",
+    "requirements*.txt",
+    "scripts/task_run_unit_tests.sh",
+    "scripts/test_impact.py",
+    "scripts/test_utils.sh"
+  ],
+  "ignored_patterns": [
+    "LICENSE",
+    "README.md",
+    "docs/**"
+  ],
+  "dependency_overrides": [
+    {
+      "source_patterns": [
+        "docs/test-impact/selector.js"
+      ],
+      "test_patterns": [
+        "tests/test_test_impact.py"
+      ]
+    }
+  ]
+}

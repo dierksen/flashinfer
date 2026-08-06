@@ -87,6 +87,7 @@ parse_args() {
     DRY_RUN=false
     SANITY_TEST=false
     TEST_PATH="${TEST_PATH:-}"
+    TEST_SELECTION_MANIFEST="${TEST_SELECTION_MANIFEST:-}"
     while [[ $# -gt 0 ]]; do
         case $1 in
             --dry-run)
@@ -105,6 +106,18 @@ parse_args() {
                 TEST_PATH="${1#*=}"
                 shift
                 ;;
+            --test-selection-manifest)
+                if [[ $# -lt 2 ]]; then
+                    echo "ERROR: --test-selection-manifest requires an argument." >&2
+                    exit 1
+                fi
+                TEST_SELECTION_MANIFEST="$2"
+                shift 2
+                ;;
+            --test-selection-manifest=*)
+                TEST_SELECTION_MANIFEST="${1#*=}"
+                shift
+                ;;
             --sanity-test)
                 if [ "$DISABLE_SANITY_TEST" = "true" ]; then
                     echo "⚠️  WARNING: Sanity testing is disabled for this test suite"
@@ -120,11 +133,20 @@ parse_args() {
                 ;;
         esac
     done
+
+    if [ -n "$TEST_PATH" ] && [ -n "$TEST_SELECTION_MANIFEST" ]; then
+        echo "ERROR: --test-path/TEST_PATH and --test-selection-manifest/TEST_SELECTION_MANIFEST are mutually exclusive." >&2
+        exit 1
+    fi
 }
 
 # Print test mode banner
 print_test_mode_banner() {
-    if [ -n "$TEST_PATH" ]; then
+    if [ "${TEST_SELECTION_MODE:-all}" = "selected" ]; then
+        echo "🎯 IMPACTED TEST MODE - Running files from: ${TEST_SELECTION_MANIFEST}"
+        echo "   Selected test files: ${TEST_SELECTION_COUNT}"
+        echo ""
+    elif [ -n "$TEST_PATH" ]; then
         echo "🎯 SCOPED TEST MODE - Only running tests under: ${TEST_PATH}"
         echo ""
     fi

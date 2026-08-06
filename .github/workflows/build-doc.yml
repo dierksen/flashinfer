@@ -45,7 +45,12 @@ jobs:
       run: |
         python -m pip install -r docs/requirements.txt
 
-    - name: Bulid Documentation
+    - name: Validate test impact explorer
+      run: |
+        node --check docs/test-impact/selector.js
+        node --check docs/test-impact/app.js
+
+    - name: Build documentation
       run: |
         cd docs
         ./build_docs.sh

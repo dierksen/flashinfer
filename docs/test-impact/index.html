@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore which FlashInfer unit tests are affected by repository changes."
+    />
+    <title>FlashInfer Test Impact Explorer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./selector.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../">FlashInfer</a>
+      <a href="https://github.com/flashinfer-ai/flashinfer">Repository</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">CI tooling</p>
+          <h1>Test Impact Explorer</h1>
+          <p class="lede">
+            Select changed repository files to preview the unit tests selected by the
+            dependency graph. Queries run entirely in your browser.
+          </p>
+        </div>
+        <div class="graph-state">
+          <span id="load-status" class="status">Loading graph…</span>
+          <p id="graph-metadata">Fetching the latest published graph.</p>
+        </div>
+      </section>
+
+      <div class="workspace">
+        <section class="panel query-panel">
+          <form id="impact-form">
+            <div class="panel-heading">
+              <div>
+                <p class="step">1</p>
+                <h2>Changed files</h2>
+              </div>
+              <button id="clear" class="button button-quiet" type="button">Clear</button>
+            </div>
+
+            <label for="file-picker">Find a tracked repository file</label>
+            <div class="file-picker-row">
+              <input
+                id="file-picker"
+                list="repository-file-options"
+                placeholder="Start typing a path…"
+                autocomplete="off"
+              />
+              <datalist id="repository-file-options"></datalist>
+              <button id="add-file" class="button button-secondary" type="button" disabled>
+                Add
+              </button>
+            </div>
+
+            <label for="changed-files">Or paste paths, one per line</label>
+            <textarea
+              id="changed-files"
+              rows="13"
+              spellcheck="false"
+              placeholder="flashinfer/attention/core.py&#10;csrc/batch_prefill.cu"
+            ></textarea>
+            <p class="hint">Accepts output from <code>git diff --name-only</code>.</p>
+
+            <button id="analyze" class="button button-primary" type="submit" disabled>
+              Analyze test impact
+            </button>
+          </form>
+        </section>
+
+        <section class="panel results-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="step">2</p>
+              <h2>Triggered tests</h2>
+            </div>
+            <button id="copy-tests" class="button button-quiet" type="button" hidden>
+              Copy test list
+            </button>
+          </div>
+          <div id="results" class="results empty" aria-live="polite">
+            <p>Choose or paste changed files, then analyze their impact.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      This is a preview of the conservative selector. Unknown or uncovered changes
+      intentionally request the full suite.
+    </footer>
+  </body>
+</html>
