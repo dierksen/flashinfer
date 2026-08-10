@@ -160,6 +160,7 @@ h2 {
 }
 
 .panel {
+  min-width: 0;
   padding: clamp(1.1rem, 2.5vw, 1.75rem);
   border: 1px solid var(--border);
   border-radius: 1.25rem;
@@ -317,11 +318,13 @@ code {
 
 .test-results {
   display: grid;
+  min-width: 0;
   gap: 0.65rem;
   margin-top: 1rem;
 }
 
 .test-result {
+  min-width: 0;
   border: 1px solid var(--border);
   border-radius: 0.8rem;
   background: var(--surface-strong);
@@ -352,11 +355,13 @@ code {
 
 .test-result-body {
   display: grid;
+  min-width: 0;
   gap: 0.75rem;
   padding: 0 1rem 1rem;
 }
 
 .impact-reason {
+  min-width: 0;
   padding: 0.85rem;
   border-radius: 0.65rem;
   background: var(--background);
@@ -383,10 +388,31 @@ code {
 
 .impact-path {
   display: flex;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   gap: 0.4rem;
   align-items: center;
   overflow-x: auto;
-  padding-bottom: 0.25rem;
+  overscroll-behavior-inline: contain;
+  padding-bottom: 0.55rem;
+  scrollbar-color: var(--muted) var(--neutral-soft);
+  scrollbar-width: thin;
+}
+
+.impact-path::-webkit-scrollbar {
+  height: 0.55rem;
+}
+
+.impact-path::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: var(--neutral-soft);
+}
+
+.impact-path::-webkit-scrollbar-thumb {
+  border: 2px solid var(--neutral-soft);
+  border-radius: 999px;
+  background: var(--muted);
 }
 
 .impact-path code {
@@ -399,6 +425,7 @@ code {
 }
 
 .path-arrow {
+  flex: 0 0 auto;
   color: var(--accent);
   font-weight: 900;
 }
